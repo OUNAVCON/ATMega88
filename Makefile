@@ -4,8 +4,8 @@
 @OS = $(shell echo %OS%)
 
 ifeq ($(OS),Windows_NT)
-  ARM = "C:\Program Files (x86)\GNU Tools ARM Embedded\6 2017-q2-update\bin\arm-none-eabi"
-  SEGGER = "C:\Program Files (x86)\SEGGER\JLink_V620e\JLink.exe"
+  ARM = "C:\Users\isaac.rose\Downloads\embedded\Microchip\avr-gcc\avr8-gnu-toolchain\bin"
+  #SEGGER = "C:\Program Files (x86)\SEGGER\JLink_V620e\JLink.exe"
   MV = "mv"
 else
   AVR = /opt/gcc-arm/bin/arm-none-eabi
@@ -18,9 +18,11 @@ endif
 
 #ARM = /opt/gcc-arm/bin/arm-none-eabi
 
+DEVICE = "atmega88"
+
 NAME = main
 PROJECT = app
-
+AVR = "avr"
 ASM = $(AVR)-as
 CC = $(AVR)-gcc
 LD = $(AVR)-ld
@@ -31,8 +33,8 @@ BUILD_LOG = build.log
 SRC_PATH = src
 SRC = $(wildcard  $(SRC_PATH)/*.c) 
 INC_PATH = includes
-CFLAGS = -c -mcpu=$(DEVICE) -g -fno-common -Wall -ffreestanding -ffunction-sections -fdata-sections -I$(INC_PATH) -I"$(ARM)../includes"
-ASMFLAGS = -mthumb -mcpu=$(DEVICE)
+CFLAGS = -c  -mmcu=$(DEVICE) -g -fno-common -Wall -ffreestanding -ffunction-sections -fdata-sections -I$(INC_PATH) -I"$(ARM)../includes"
+ASMFLAGS = -mthumb  -mmcu=$(DEVICE)
 OBJ_CPY = $(ARM)-objcopy
 LDFLAGS = -T lnk.ld -nostartfiles -nostdlib -Map=$(PROJECT).map 
 DEPENDENCIES = $(subst .c,.d,$(SRC))
