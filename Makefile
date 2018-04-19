@@ -8,7 +8,7 @@ ifeq ($(OS),Windows_NT)
   #SEGGER = "C:\Program Files (x86)\SEGGER\JLink_V620e\JLink.exe"
   MV = "mv"
 else
-  AVR = /opt/gcc-arm/bin/arm-none-eabi
+  AVR = /opt/gcc-avr/bin/gcc-avr
   AVRDUDE = /opt/SEGGER/JLink/JLinkExe
   MV = mv 
 endif
@@ -35,7 +35,7 @@ SRC = $(wildcard  $(SRC_PATH)/*.c)
 INC_PATH = includes
 CFLAGS = -c  -mmcu=$(DEVICE) -g -fno-common -Wall -ffreestanding -ffunction-sections -fdata-sections -I$(INC_PATH) -I"$(ARM)../includes"
 ASMFLAGS = -mthumb  -mmcu=$(DEVICE)
-OBJ_CPY = $(ARM)-objcopy
+OBJ_CPY = $(AVR)-objcopy
 LDFLAGS = -T lnk.ld -nostartfiles -nostdlib -Map=$(PROJECT).map 
 DEPENDENCIES = $(subst .c,.d,$(SRC))
 

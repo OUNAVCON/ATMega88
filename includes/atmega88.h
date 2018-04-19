@@ -1,4 +1,39 @@
-#define BASE 0x00 
+
+
+/*@}*/
+typedef struct _DeviceVectors
+{
+  void* pfnReset_Handler;                     /* 0  Reset */
+  void* pfnINT0_Handler;                      /*  1 INT0 */
+  void* pfnINT1_Handler;                      /*  2 INT1 */
+  void* pfnPCINT0_Handler;                    /*  3 PC INT0 */
+  void* pfnPCINT1_Handler;                    /*  4 PC INT1 */
+  void* pfnPCINT2_Handler;                    /*  5 PC INT2 */
+  void* pfnWDT_Handler;                       /*  6 WDT */
+  void* pfnTIMER2_COMPA_Handler;              /*  7 TIMER2_COMPA */
+  void* pfnTIMER2_COMPB_Handler;              /*  8 TIMER2_COMB */
+  void* pfnTIMER2_OVF_Handler;                /*  9 TIMER2_OVF */
+  void* pfnTIMER1_CAPT_Handler;               /* 10 TIMER1_CAPT  */
+  void* pfnTIMER1_COMPA_Handler;              /* 11 TIMER1_COMPA */
+  void* pfnTIMER1_COMB_Handler;               /* 12 TIMER1_COMB */
+  void* pfnTIMER1_OVF_Handler;                /* 13 TIMER1_OVF*/
+  void* pfnTIMER0_COMPA_Handler;              /* 14 TIMER0_COMPA */
+  void* pfnTIMER0_COMPB_Handler;              /* 15 TIMER0_COMPB */
+  void* pfnTIMER0_OVF_Handler;                /* 16 TIMER0_OVF */
+  void* pfnSPI_STC_Handler;                   /* 17 SPI_STC */
+  void* pfnSPI_RX_Handler;                   /* 18 USART_RX */
+  void* pfnUSART_UDRE_Handler;             /* 19 USART_UDRE  */
+  void* pfnUSART_TX_Handler;                  /* 20 USART_TX */
+  void* pfnADC_Handler;                       /* 21 ADC */
+  void* pfnEE_READY_Handler;                  /* 23 EE READY */
+  void* pfnANALOG_COMPARATOR_Handler;         /* 24 ANALOG COMPARATOR* */
+  void* pfnTWI_Handler;                       /* 25 TWI I2C* */
+  void* pfnSPM_READY_Handler;                 /* 26 SPM READY */
+} DeviceVectors;
+
+
+
+#define BASE 0x00 //End Address = 0xFF
 #define PINB   (*((volatile uint8_t *)(BASE+0x23)))
 #define DDRB   (*((volatile uint8_t *)(BASE+0x24)))
 #define PORTB  (*((volatile uint8_t *)(BASE+0x25)))
