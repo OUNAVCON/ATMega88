@@ -4,8 +4,8 @@
 @OS = $(shell echo %OS%)
 
 ifeq ($(OS),Windows_NT)
-  ARM = "C:\Users\isaac.rose\Downloads\embedded\Microchip\avr-gcc\avr8-gnu-toolchain\bin"
-  #SEGGER = "C:\Program Files (x86)\SEGGER\JLink_V620e\JLink.exe"
+  AVR = "C:\Users\isaac.rose\Downloads\embedded\Microchip\avr-gcc\avr8-gnu-toolchain\bin"
+  AVRDUDE = "C:\Users\isaac.rose\Downloads\embedded\Microchip\avr-gcc\avrDude\avrdude.exe"
   MV = "mv"
 else
   AVR = /opt/gcc-avr/bin/gcc-avr
@@ -13,10 +13,6 @@ else
   MV = mv 
 endif
 
-
-
-
-#ARM = /opt/gcc-arm/bin/arm-none-eabi
 
 DEVICE = "atmega88"
 
@@ -38,8 +34,6 @@ ASMFLAGS = -mthumb  -mmcu=$(DEVICE)
 OBJ_CPY = $(AVR)-objcopy
 LDFLAGS = -T lnk.ld -nostartfiles -nostdlib -Map=$(PROJECT).map 
 DEPENDENCIES = $(subst .c,.d,$(SRC))
-
-#SEGGER = /opt/SEGGER/JLink/JLinkExe
 
 %.o: %.c
 	@echo Compiling $<
@@ -82,8 +76,12 @@ debug:
 #	@$(GDB) 
 
 flash:
-	#@$(SEGGER) -si swd -device ATSAMD10D13AS -speed auto -CommanderScript ./seggerScript.jlink
-	@$(AVRDUDE)
+	@$(AVRDUDE) -P COM1 -p m88 -c usbasp -v -U "hfuse:r:<0x12>:m"
+	@$(AVRDUDE) -P COM1 -p m88 -c usbasp -v -U "lfuse:r:<0x12>:m"
+	@$(AVRDUDE) -P COM1 -p m88 -c usbasp -v -U "efuse:r:<0x12>:m"
+	@$(AVRDUDE) -P COM1 -p m88 -c usbasp -v -U "flash:w:build/app.elf:e
+ 
+ 
  
 clean:
 	@echo Removing Build Files
