@@ -4,11 +4,11 @@
 @OS = $(shell echo %OS%)
 
 ifeq ($(OS),Windows_NT)
-  AVR = "C:\Users\isaac.rose\Downloads\embedded\Microchip\avr-gcc\avr8-gnu-toolchain\bin"
+  AVR_PATH = "C:\Users\isaac.rose\Downloads\embedded\Microchip\avr-gcc\avr8-gnu-toolchain\bin"
   AVRDUDE = "C:\Users\isaac.rose\Downloads\embedded\Microchip\avr-gcc\avrDude\avrdude.exe"
   MV = "mv"
 else
-  AVR = /opt/gcc-avr/bin/gcc-avr
+  AVR_PATH = /opt/gcc-avr/bin/gcc-avr
   AVRDUDE = /opt/SEGGER/JLink/JLinkExe
   MV = mv 
 endif
@@ -19,37 +19,47 @@ DEVICE = "atmega88"
 NAME = main
 PROJECT = app
 AVR = "avr"
-ASM = $(AVR)-as
-CC = $(AVR)-gcc
-LD = $(AVR)-ld
-SIZE = $(AVR)-size
+ASM = $(AVR_PATH)/$(AVR)-as
+CC = $(AVR_PATH)/$(AVR)-gcc
+LD = $(AVR_PATH)/$(AVR)-ld
+SIZE = $(AVR_PATH/)$(AVR)-size
+OBJ_CPY =  $(AVR_PATH)/$(AVR)-objcopy
+OBJ_DUMP =  $(AVR_PATH)/$(AVR)-objdump
 
 OUT_DIR = build
 BUILD_LOG = build.log
 SRC_PATH = src
-SRC = $(wildcard  $(SRC_PATH)/*.c) 
+SRC = $(wildcard  $(SRC_PATH)/*.c)
+ASRC = $(wildcard  $(SRC_PATH)/*.S) 
 INC_PATH = includes
 CFLAGS = -c  -mmcu=$(DEVICE) -g -fno-common -Wall -ffreestanding -ffunction-sections -fdata-sections -I$(INC_PATH) -I"$(ARM)../includes"
 ASMFLAGS = -mthumb  -mmcu=$(DEVICE)
-OBJ_CPY = $(AVR)-objcopy
 LDFLAGS = -T lnk.ld -nostartfiles -nostdlib -Map=$(PROJECT).map 
 DEPENDENCIES = $(subst .c,.d,$(SRC))
 
-%.o: %.c
+%.o : %.c
 	@echo Compiling $<
 	@echo >> ${BUILD_LOG}
 	@echo $(CC) $(CFLAGS) -o $@ $< >> ${BUILD_LOG}
 	@$(CC) $(CFLAGS) -o $@ $< >> ${BUILD_LOG}
 
-OBJ = $(subst .c,.o,$(SRC))
+%.o : %.S
+	@echo Assembling $<
+	@echo >> ${BUILD_LOG}
+	@echo $(CC) -c  $< -o $@ >> ${BUILD_LOG}
+	@$(CC) -c  $< -o $@ >> ${BUILD_LOG}
+
+OBJ = $(subst .c,.o,$(SRC))  $(subst .S,.o,$(ASRC))
 #OBJ2 = $(subst $(SRC_PATH),$(OUT_DIR),$(subst .c,.o,$(SRC)))
 
 all: $(PROJECT).bin $(OUT_DIR)
 #	@echo $(OBJ2)
-	@$(MV) $(PROJECT).map $(PROJECT).elf $(PROJECT).bin $(OBJ) $(BUILD_LOG) $(OUT_DIR)/
+	@$(OBJ_DUMP) -S $(PROJECT).elf > $(PROJECT).lst
+	@$(MV) $(PROJECT).map $(PROJECT).elf $(PROJECT).bin $(PROJECT).lst $(OBJ) $(BUILD_LOG) $(OUT_DIR)/
 	@echo Code Size
 #	@echo $(SIZE) $(OUT_DIR)/$(PROJECT).bin
 	@$(SIZE) $(OUT_DIR)/$(PROJECT).elf
+
 
 $(PROJECT).elf: $(OBJ)
 	@echo Linking $@

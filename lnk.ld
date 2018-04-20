@@ -1,21 +1,16 @@
 ENTRY(main)
 
 MEMORY{
-   ISR (rx): 	ORIGIN = 0x0000, LENGTH = 0x0036
-   FLASH (rwx): ORIGIN = 0x0036, LENGTH = 0x1FA0 
+   FLASH (rwx): ORIGIN = 0x0000, LENGTH = 0x1FA0 
    RAM (rwx):   ORIGIN = 0x0100, LENGTH = 0x04FF 
    EEPROM(rw):  ORIGIN = 0x0000, LENGTH = 0x0000
 }
 
 SECTIONS {
-    .isrVectors : {
-        . = ALIGN(2);
-        KEEP(*(.isrVectors))
-        . = ALIGN(2);
-    } > ISR
-
     .text : {
         . = ALIGN(2);
+        *(.isrVectors)
+        *(.isrVectors*)
         *(.text)
         *(.text*)
         *(.rodata)
