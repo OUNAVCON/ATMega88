@@ -8,8 +8,8 @@ ifeq ($(OS),Windows_NT)
   AVRDUDE = "C:\Users\isaac.rose\Downloads\embedded\Microchip\avr-gcc\avrDude\avrdude.exe"
   MV = "mv"
 else
-  AVR_PATH = /opt/gcc-avr/bin/gcc-avr
-  AVRDUDE = /opt/SEGGER/JLink/JLinkExe
+  AVR_PATH = /opt/gcc-avr/bin
+  AVRDUDE = /usr/bin/avrdude
   MV = mv 
 endif
 
@@ -86,10 +86,10 @@ debug:
 #	@$(GDB) 
 
 flash:
-	@$(AVRDUDE) -P COM1 -p m88 -c usbasp -v -U "hfuse:r:<0x12>:m"
-	@$(AVRDUDE) -P COM1 -p m88 -c usbasp -v -U "lfuse:r:<0x12>:m"
-	@$(AVRDUDE) -P COM1 -p m88 -c usbasp -v -U "efuse:r:<0x12>:m"
-	@$(AVRDUDE) -P COM1 -p m88 -c usbasp -v -U "flash:w:build/app.elf:e
+#	@$(AVRDUDE) -P COM1 -p m88 -c usbasp -v -U "hfuse:r:<0x12>:m"
+#	@$(AVRDUDE) -P COM1 -p m88 -c usbasp -v -U "lfuse:r:<0x12>:m"
+#	@$(AVRDUDE) -P COM1 -p m88 -c usbasp -v -U "efuse:r:<0x12>:m"
+	@$(AVRDUDE) -P usb -p m88 -c usbasp -v -U "flash:w:build/app.elf:e"
  
  
  
