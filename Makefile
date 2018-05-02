@@ -32,9 +32,9 @@ SRC_PATH = src
 SRC = $(wildcard  $(SRC_PATH)/*.c)
 ASRC = $(wildcard  $(SRC_PATH)/*.S) 
 INC_PATH = includes
-CFLAGS = -c  -mmcu=$(DEVICE) -g -fno-common -Wall -ffreestanding -ffunction-sections -fdata-sections -I$(INC_PATH) -I"$(ARM)../includes"
+CFLAGS = -c  -mmcu=$(DEVICE) -g -Os -mcall-prologues -fno-common -Wall -ffreestanding -ffunction-sections -fdata-sections -I$(INC_PATH) -I"$(ARM)../includes"
 ASMFLAGS = -mthumb  -mmcu=$(DEVICE)
-LDFLAGS = -T lnk.ld -nostartfiles -nostdlib -Map=$(PROJECT).map 
+LDFLAGS = -g -nostartfiles -nostdlib -mmcu=$(DEVICE)
 DEPENDENCIES = $(subst .c,.d,$(SRC))
 
 %.o : %.c
@@ -55,7 +55,7 @@ OBJ = $(subst .c,.o,$(SRC))  $(subst .S,.o,$(ASRC))
 all: $(PROJECT).bin $(OUT_DIR)
 #	@echo $(OBJ2)
 	@$(OBJ_DUMP) -S $(PROJECT).elf > $(PROJECT).lst
-	@$(MV) $(PROJECT).map $(PROJECT).elf $(PROJECT).bin $(PROJECT).lst $(OBJ) $(BUILD_LOG) $(OUT_DIR)/
+	@$(MV)  $(PROJECT).elf $(PROJECT).bin $(PROJECT).lst $(OBJ) $(BUILD_LOG) $(OUT_DIR)/
 	@echo Code Size
 #	@echo $(SIZE) $(OUT_DIR)/$(PROJECT).bin
 	@$(SIZE) $(OUT_DIR)/$(PROJECT).elf
@@ -65,7 +65,7 @@ $(PROJECT).elf: $(OBJ)
 	@echo Linking $@
 	@echo >> ${BUILD_LOG}
 #	@echo ${LD} ${LDFLAGS} ${OBJ} >> ${BUILD_LOG}
-	@${LD} ${LDFLAGS} ${OBJ} -o $@ >> ${BUILD_LOG}
+	@${CC} ${LDFLAGS} ${OBJ} -o $@ >> ${BUILD_LOG}
 	@echo Created File: $@
 
 $(PROJECT).bin: $(PROJECT).elf
